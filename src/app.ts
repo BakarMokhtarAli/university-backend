@@ -8,6 +8,9 @@ import AppError from "./utils/AppError";
 // import routes
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import batchRoutes from "./routes/batch.routes";
+import semesterRoutes from "./routes/semster.routes";
+import studentRoutes from "./routes/student.routes";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +19,9 @@ app.use(cors());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/batches", batchRoutes);
+app.use("/api/semesters", semesterRoutes);
+app.use("/api/students", studentRoutes);
 
 // 404 no route found
 app.use((req, res, next) => {

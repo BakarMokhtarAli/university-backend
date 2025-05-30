@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, CookieOptions } from "express";
 import AppError from "../utils/AppError";
 import catchAsync from "../utils/catchAsync";
 import User, { IUser } from "../models/user.model";
+import Student from "../models/student.model";
 
 interface LoginInput {
   email: string;
@@ -58,6 +59,35 @@ export const login = catchAsync(
       message: "Logged in successfully",
       token,
       user,
+    });
+  }
+);
+
+export const studentLogin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id_number, password } = req.body;
+
+    if (!id_number || !password) {
+      return next(new AppError("Please provide email and password", 400));
+    }
+
+    // Find the student by email and select the password field
+    const student = await Student.findOne({ id_number });
+
+    // Check if the student exists and the plain text password matches
+    // WARNING: Comparing plain text passwords is a security risk
+    if (!student || student.password !== password) {
+      return next(new AppError("Invalid email or password", 401));
+    }
+
+    // Generate JWT token
+    const token = student.generateAuthToken();
+
+    res.status(200).json({
+      status: "success",
+      message: "Student logged in successfully",
+      student: student,
+      token,
     });
   }
 );
