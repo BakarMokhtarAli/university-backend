@@ -11,6 +11,7 @@ import userRoutes from "./routes/user.routes";
 import batchRoutes from "./routes/batch.routes";
 import semesterRoutes from "./routes/semster.routes";
 import studentRoutes from "./routes/student.routes";
+import facultyRoutes from "./routes/faculty.routes";
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/batches", batchRoutes);
 app.use("/api/semesters", semesterRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/faculties", facultyRoutes);
 
 // 404 no route found
 app.use((req, res, next) => {

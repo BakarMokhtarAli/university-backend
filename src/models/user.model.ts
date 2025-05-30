@@ -9,7 +9,7 @@ interface JwtPayload {
   email: string;
 }
 
-type Role = "admin" | "user" | "student";
+type Role = "admin" | "user" | "teacher";
 
 export interface IUser {
   name: string;

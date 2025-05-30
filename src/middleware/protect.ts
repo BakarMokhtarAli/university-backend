@@ -37,7 +37,7 @@ export const protect = catchAsync(
   }
 );
 
-type Role = "admin" | "user" | "student";
+type Role = "admin" | "user" | "teacher";
 // restrict
 export const restrictTo = (...roles: (Role | undefined)[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
