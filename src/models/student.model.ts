@@ -12,6 +12,7 @@ const Counter = mongoose.model("Counter", counterSchema);
 export interface IStudent extends Document {
   // Personal Information
   fullName: string;
+  class: mongoose.Types.ObjectId;
   dateOfBirth?: Date;
   placeOfBirth?: string;
   nationality?: string;
@@ -50,6 +51,7 @@ export interface IStudent extends Document {
 const studentSchema = new mongoose.Schema<IStudent>({
   // Personal Information
   fullName: { type: String, required: true },
+  class: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
   dateOfBirth: { type: Date },
   placeOfBirth: { type: String },
   nationality: { type: String },

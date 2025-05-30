@@ -12,6 +12,9 @@ import batchRoutes from "./routes/batch.routes";
 import semesterRoutes from "./routes/semster.routes";
 import studentRoutes from "./routes/student.routes";
 import facultyRoutes from "./routes/faculty.routes";
+import classRoutes from "./routes/class.routes";
+import attendaceRoutes from "./routes/attendance.routes";
+import subjectRoutes from "./routes/subject.routes";
 
 const app = express();
 app.use(express.json());
@@ -24,6 +27,9 @@ app.use("/api/batches", batchRoutes);
 app.use("/api/semesters", semesterRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/faculties", facultyRoutes);
+app.use("/api/classes", classRoutes);
+app.use("/api/attendances", attendaceRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 // 404 no route found
 app.use((req, res, next) => {
