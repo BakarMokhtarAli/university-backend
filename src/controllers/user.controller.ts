@@ -28,3 +28,66 @@ export const getUserById = catchAsync(
     });
   }
 );
+
+// create user
+export const createUser = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { name, email, password } = req.body;
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "User created successfully",
+      user,
+    });
+  }
+);
+
+//update user
+export const updateUser = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { id } = req.params;
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "User updated successfully",
+      user: updatedUser,
+    });
+  }
+);
+
+//delete user
+export const deleteUser = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { id } = req.params;
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "User deleted successfully",
+      user: deletedUser,
+    });
+  }
+);
