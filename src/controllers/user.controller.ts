@@ -33,11 +33,7 @@ export const getUserById = catchAsync(
 export const createUser = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { name, email, password } = req.body;
-    const user = await User.create({
-      name,
-      email,
-      password,
-    });
+    const user = await User.create(req.body);
 
     res.status(201).json({
       status: "success",
