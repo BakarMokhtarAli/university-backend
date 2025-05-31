@@ -5,7 +5,7 @@ import User, { IUser } from "../models/user.model";
 import { AuthRequest } from "../middleware/protect";
 
 export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const users = await User.find();
+  const users = await User.find().select("+password");
   res.status(200).json({
     status: "success",
     message: "Users retrieved successfully",
@@ -16,7 +16,7 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 // get user by id
 export const getUserById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select("+password");
     if (!user) {
       return next(new AppError("User not found", 404));
     }

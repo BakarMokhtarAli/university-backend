@@ -16,7 +16,7 @@ router.use(restrictTo("admin"));
 router.route("/").get(getAllUsers).post(createUser);
 router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
 
-router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
+// router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
 // router.get("/:id", protect, getUserById);
 
 export default router;
