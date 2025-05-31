@@ -6,7 +6,7 @@ import { AuthRequest } from "../middleware/protect";
 
 export const getAllFaculties = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const faculties = await Faculty.find();
+    const faculties = await Faculty.find().populate("dean");
     res.status(200).json({
       status: "success",
       message: "Faculties retrieved successfully",
