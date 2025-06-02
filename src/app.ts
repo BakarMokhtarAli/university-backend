@@ -15,6 +15,7 @@ import facultyRoutes from "./routes/faculty.routes";
 import classRoutes from "./routes/class.routes";
 import attendaceRoutes from "./routes/attendance.routes";
 import subjectRoutes from "./routes/subject.routes";
+import announcementRoutes from "./routes/announcement.routes"; 
 
 const app = express();
 app.use(express.json());
@@ -34,6 +35,7 @@ app.use("/api/faculties", facultyRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/attendances", attendaceRoutes);
 app.use("/api/subjects", subjectRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 // 404 no route found
 app.use((req, res, next) => {
