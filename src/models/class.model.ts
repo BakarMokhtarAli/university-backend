@@ -5,7 +5,7 @@ export interface IClass extends Document {
   faculty: mongoose.Types.ObjectId;
   semester: mongoose.Types.ObjectId;
   teacher: mongoose.Types.ObjectId;
-  //   students: mongoose.Types.ObjectId[];
+  students?: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }

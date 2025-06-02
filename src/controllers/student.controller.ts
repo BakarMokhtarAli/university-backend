@@ -8,7 +8,7 @@ import { IStudent } from "../models/student.model"; // Import the interface
 // Get all students
 export const getAllStudents = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const students = await Student.find();
+    const students = await Student.find().populate("class");
     res.status(200).json({
       status: "success",
       message: "Students retrieved successfully",
@@ -20,7 +20,7 @@ export const getAllStudents = catchAsync(
 // Get student by id
 export const getStudentById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const student = await Student.findById(req.params.id);
+    const student = await Student.findById(req.params.id).populate("class");
     if (!student) {
       return next(new AppError("Student not found", 404));
     }
