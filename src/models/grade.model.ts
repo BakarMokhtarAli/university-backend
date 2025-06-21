@@ -31,11 +31,61 @@ const gradeSchema = new Schema<IGrade>(
       ref: "Subject",
       required: true,
     },
-    cw1: { type: Number, min: 0, max: 100 },
-    midterm: { type: Number, min: 0, max: 100 },
-    cw2: { type: Number, min: 0, max: 100 },
-    final: { type: Number, min: 0, max: 100 },
-    total: { type: Number, min: 0, max: 400 }, // Max 400 (100*4)
+    cw1: {
+      type: Number,
+      min: 0,
+      max: 10,
+      validate: {
+        validator: function (value) {
+          return value >= 0 && value <= 10;
+        },
+        message: "{VALUE} must be between 0 and 10 for CW1",
+      },
+    },
+    midterm: {
+      type: Number,
+      min: 0,
+      max: 30,
+      validate: {
+        validator: function (value) {
+          return value >= 0 && value <= 30;
+        },
+        message: "{VALUE} must be between 0 and 30 for Midterm",
+      },
+    },
+    cw2: {
+      type: Number,
+      min: 0,
+      max: 10,
+      validate: {
+        validator: function (value) {
+          return value >= 0 && value <= 10;
+        },
+        message: "{VALUE} must be between 0 and 10 for CW2",
+      },
+    },
+    final: {
+      type: Number,
+      min: 0,
+      max: 60,
+      validate: {
+        validator: function (value) {
+          return value >= 0 && value <= 60;
+        },
+        message: "{VALUE} must be between 0 and 60 for Final",
+      },
+    },
+    total: {
+      type: Number,
+      min: 0,
+      max: 100,
+      validate: {
+        validator: function (value) {
+          return value >= 0 && value <= 100;
+        },
+        message: "{VALUE} must be between 0 and 100 for Total",
+      },
+    },
   },
   { timestamps: true }
 );

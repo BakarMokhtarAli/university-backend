@@ -164,6 +164,12 @@ export const uploadGrades = catchAsync(
             errors.push(`Row ${i}: ${key} must be between 0-100`);
           }
         }
+        if (cw1 + midterm + cw2 + final > 100) {
+          errors.push(`Row ${i}: Total must be less than or equal to 100`);
+        }
+        if (cw1 > 10 || midterm > 30 || cw2 > 10 || final > 60) {
+          errors.push(`Row ${i}: Grade value is too high`);
+        }
 
         updates.push({
           student: studentMap.get(studentId),

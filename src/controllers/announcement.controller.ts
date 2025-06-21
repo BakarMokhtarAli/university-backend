@@ -32,9 +32,6 @@ export const getAllAnnouncements = catchAsync(
     const { receiver } = req.query;
     const filter = receiver ? { receiver } : {};
 
-    
-    
-
     const announcements = await Announcement.find(filter).sort({ _id: -1 });
 
     res.status(200).json({

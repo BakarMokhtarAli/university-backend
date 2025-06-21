@@ -7,22 +7,28 @@ export interface IAnnouncement extends Document {
   receiver: "teachers" | "students";
 }
 
-const AnnouncementSchema: Schema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
+const AnnouncementSchema: Schema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    receiver: {
+      type: String,
+      enum: ["teachers", "students"],
+      required: true,
+    },
   },
-  description: {
-    type: String,
-    required: true,
-  },
-  receiver: {
-    type: String,
-    enum: ["teachers", "students"],
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
-const Announcement = mongoose.model<IAnnouncement>("Announcement", AnnouncementSchema);
-export default Announcement; 
+const Announcement = mongoose.model<IAnnouncement>(
+  "Announcement",
+  AnnouncementSchema
+);
+export default Announcement;
