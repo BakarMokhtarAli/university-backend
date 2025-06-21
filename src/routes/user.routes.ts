@@ -10,8 +10,8 @@ import { protect, restrictTo } from "../middleware/protect";
 
 const router = express.Router();
 
-router.use(protect);
-router.use(restrictTo("admin"));
+// router.use(protect);
+// router.use(restrictTo("admin"));
 
 router.route("/").get(getAllUsers).post(createUser);
 router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);

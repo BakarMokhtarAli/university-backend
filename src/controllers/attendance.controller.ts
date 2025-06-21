@@ -122,7 +122,7 @@ export const createAttendances = catchAsync(
 
       if (existingAttendance) {
         errors.push(
-          `Attendance already exists for student ${studentId} in subject ${subjectId} on ${date}`
+          `Attendance already exists for student ${student.fullName} in subject ${subject.name} on ${date}`
         );
         continue;
       }

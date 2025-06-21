@@ -5,8 +5,7 @@ export interface IFaculty extends Document {
   arabicName?: string;
   description: string;
   dean: mongoose.Types.ObjectId;
-  students: number;
-  staff: number;
+
   established_year: Date;
   departments: string[];
 }
@@ -16,8 +15,7 @@ const facultySchema = new Schema<IFaculty>({
   arabicName: { type: String },
   description: { type: String, required: true },
   dean: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  students: { type: Number },
-  staff: { type: Number },
+
   established_year: { type: Date, required: true },
   departments: { type: [String] },
 });

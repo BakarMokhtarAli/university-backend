@@ -82,3 +82,20 @@ export const deleteStudent = catchAsync(
     });
   }
 );
+
+// Get all students by class
+export const getAllStudentsByClass = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { class_id } = req.params;
+    if (!class_id) {
+      return next(new AppError("Class ID is required", 400));
+    }
+    const students = await Student.find({ class: class_id });
+    res.status(200).json({
+      status: "success",
+      // message: "Students retrieved successfully",
+      results: students.length,
+      students,
+    });
+  }
+);
