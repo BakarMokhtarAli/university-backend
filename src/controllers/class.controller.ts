@@ -11,7 +11,12 @@ export const getAllClasses = catchAsync(
         path: "students",
         select: "fullName sex id_number",
       })
-      .populate("faculty");
+      .populate("faculty")
+      .populate({
+        path: "batch",
+        select: "name",
+      })
+      .sort({ createdAt: -1 });
     res.status(200).json({
       status: "success",
       message: "Classes retrieved successfully",
@@ -28,7 +33,12 @@ export const getClassById = catchAsync(
       .populate({
         path: "students",
         select: "fullName sex id_number",
+      })
+      .populate({
+        path: "batch",
+        select: "name",
       });
+
     if (!class_) {
       return next(new AppError("Class not found", 404));
     }

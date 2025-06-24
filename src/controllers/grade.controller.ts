@@ -230,6 +230,8 @@ export const uploadGrades = catchAsync(
       const students = await Student.find({}, "id_number");
       const studentMap = new Map(students.map((s) => [s.id_number, s._id]));
 
+      console.log("studentsMap", studentMap);
+
       // Process rows
       for (let i = 2; i <= worksheet.rowCount; i++) {
         const row = worksheet.getRow(i);

@@ -19,25 +19,27 @@ export const protect = catchAsync(
     ) {
       token = req.headers.authorization.split("Token ")[1];
     }
+
     if (!token) {
       return next(
         new AppError("You are not logged in! Please log in to get access.", 401)
       );
     }
-    try {
-      // Verify token
-      const decoded = await jwt.verify(token, JWT_SECRET);
-      // console.log("decoded", decoded);
+    // try {
+    // Verify token
+    const decoded = await jwt.verify(token, JWT_SECRET);
+    // console.log("decoded", decoded);
 
-      req.user = decoded as IUser;
-      next();
-    } catch (error) {
-      next(new AppError("something went wrong", 500));
-    }
+    req.user = decoded as IUser;
+    next();
+    // } catch (error: any) {
+    //   console.log("error", error.name);
+    //   next(new AppError("something went wrong", 500));
+    // }
   }
 );
 
-type Role = "admin" | "user" | "teacher" | "dean";
+type Role = "admin" | "user" | "dean";
 // restrict
 export const restrictTo = (...roles: (Role | undefined)[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {

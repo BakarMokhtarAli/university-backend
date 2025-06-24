@@ -60,7 +60,7 @@ const handleJWTError = (): AppError =>
   new AppError("Invalid token. Please log in again!", 401);
 
 const handleTokenExpired = (): AppError =>
-  new AppError("Your token has expired! Please log in again.", 401);
+  new AppError("Your session has expired! Please log in again.", 401);
 
 const globalErrorHandler = (
   err: CustomError,

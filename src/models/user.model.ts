@@ -9,7 +9,7 @@ interface JwtPayload {
   email: string;
 }
 
-type Role = "admin" | "user" | "teacher" | "dean";
+type Role = "admin" | "user" | "dean";
 
 export interface IUser {
   name: string;
@@ -76,7 +76,7 @@ userSchema.methods.generateAuthToken = function () {
   };
 
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "9d", // Expires in 9 days
   });
 };
 

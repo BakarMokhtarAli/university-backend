@@ -5,6 +5,7 @@ export interface IClass extends Document {
   faculty: mongoose.Types.ObjectId;
   semester: mongoose.Types.ObjectId;
   teacher: mongoose.Types.ObjectId;
+  batch: mongoose.Types.ObjectId;
   students?: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
@@ -29,6 +30,11 @@ const classSchema = new mongoose.Schema<IClass>(
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      //   required: true,
+    },
+    batch: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Batch",
       //   required: true,
     },
     // students: [
