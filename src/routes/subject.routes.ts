@@ -10,7 +10,7 @@ import { protect } from "../middleware/protect";
 
 const router = express.Router();
 
-router.use(protect);
+// router.use(protect);
 
 router.route("/").post(createSubject).get(getAllSubjects);
 

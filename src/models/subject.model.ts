@@ -1,42 +1,20 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ISubject extends Document {
   name: string;
   code: string;
-  description?: string;
-  faculty?: mongoose.Types.ObjectId; // Reference to Faculty model
-  classes: mongoose.Types.ObjectId[]; // Reference to Class model
+  faculty?: mongoose.Types.ObjectId;
+  classes: mongoose.Types.ObjectId[];
 }
 
-const subjectSchema = new Schema<ISubject>(
+const subjectSchema: Schema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
-    code: {
-      type: String,
-      required: true,
-      unique: true,
-      uppercase: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      trim: true,
-    },
-    classes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Class",
-      },
-    ],
+    name: { type: String, required: true },
+    code: { type: String, required: true },
+    // faculty: { type: Schema.Types.ObjectId, ref: "Faculty" },
+    classes: [{ type: Schema.Types.ObjectId, ref: "Class" }],
   },
   { timestamps: true }
 );
 
-const Subject = mongoose.model<ISubject>("Subject", subjectSchema);
-
-export default Subject;
+export default mongoose.model<ISubject>("Subject", subjectSchema);
