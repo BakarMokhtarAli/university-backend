@@ -3,9 +3,6 @@ import AppError from "../utils/AppError";
 import catchAsync from "../utils/catchAsync";
 import User, { IUser } from "../models/user.model";
 import { AuthRequest } from "../middleware/protect";
-import { uploadImage } from "../utils/uploadImage";
-import { deleteImageFile } from "../utils/deleteFile";
-import { APP_BASE_URL } from "../config";
 
 export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users = await User.find().select("+password");
@@ -37,9 +34,7 @@ export const createUser = catchAsync(
   async (req: AuthRequest, res: Response) => {
     // If file was uploaded, build public URL
     if (req.file) {
-      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
-
-      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const user = await User.create(req.body);
@@ -59,12 +54,8 @@ export const updateUser = catchAsync(
     if (!user) throw new AppError("User not found", 404);
 
     // Attach image URL if file exists
-    // 🔁 Delete old image if a new one is uploaded
     if (req.file) {
-      if (user.image) deleteImageFile(user.image);
-      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
-
-      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {

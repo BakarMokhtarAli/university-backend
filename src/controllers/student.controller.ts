@@ -7,8 +7,7 @@ import { IStudent } from "../models/student.model"; // Import the interface
 import Class from "../models/class.model";
 import Faculty from "../models/faculty.model";
 import Counter from "../models/counter.model";
-import { deleteImageFile } from "../utils/deleteFile";
-import { APP_BASE_URL } from "../config";
+
 // import { uploadImage } from "../utils/uploadImage";
 
 // Get all students
@@ -83,9 +82,7 @@ export const createStudent = catchAsync(
     // }
     // If file was uploaded, build public URL
     if (req.file) {
-      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
-
-      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     // 5. Create student
@@ -200,10 +197,7 @@ export const updateStudent = catchAsync(
     // Attach image URL if file exists
     // 🔁 Delete old image if a new one is uploaded
     if (req.file) {
-      if (student.image) deleteImageFile(student.image);
-      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
-
-      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const updated = await Student.findByIdAndUpdate(req.params.id, req.body, {
@@ -230,7 +224,6 @@ export const deleteStudent = catchAsync(
 
     if (!student) return next(new AppError("Student not found", 404));
     // 🧹 Delete image if exists
-    if (student.image) deleteImageFile(student.image);
 
     await student.deleteOne();
 

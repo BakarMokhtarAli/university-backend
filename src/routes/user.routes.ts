@@ -15,14 +15,11 @@ const router = express.Router();
 // router.use(protect);
 // router.use(restrictTo("admin"));
 
-router
-  .route("/")
-  .get(getAllUsers)
-  .post(imageUpload.single("image"), createUser);
+router.route("/").get(getAllUsers).post(upload.single("image"), createUser);
 router
   .route("/:id")
   .get(getUserById)
-  .patch(imageUpload.single("image"), updateUser)
+  .patch(upload.single("image"), updateUser)
   .delete(deleteUser);
 
 // router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);

@@ -1,27 +1,38 @@
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../utils/cloudinary";
 import AppError from "../utils/AppError";
 
-const storage = multer.memoryStorage(); // store file in memory
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: "students",
+      format: "jpg", // convert to jpg (optional)
+      public_id: `${file.originalname.split(".")[0]}-${Date.now()}`,
+      transformation: [{ width: 1000, height: 1000, crop: "limit" }],
+    };
+  },
+});
 
-const fileFilter = (
-  req: any,
-  file: Express.Multer.File,
-  cb: multer.FileFilterCallback
-) => {
-  if (file.mimetype.startsWith("image/")) {
+// Filter to allow only images
+const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new AppError("Only image files are allowed!", 400));
+    cb(new AppError("Only JPEG and PNG image files are allowed", 400));
   }
 };
 
+// Setup multer with size limit and file type filter
 const upload = multer({
   storage,
-  fileFilter,
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB limit
-    files: 1, // Limit to 1 file
+    fileSize: 2 * 1024 * 1024, // ✅ 2MB limit
   },
+  fileFilter,
 });
 
 export default upload;

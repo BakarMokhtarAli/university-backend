@@ -15,13 +15,13 @@ import { imageUpload } from "../middleware/imageUpload.middleware";
 router
   .route("/")
   .get(getAllStudents)
-  .post(imageUpload.single("image"), createStudent);
+  .post(upload.single("image"), createStudent);
 router.route("/class/:class_id").get(getAllStudentsByClass);
 
 router
   .route("/:id")
   .get(getStudentById)
-  .patch(imageUpload.single("image"), updateStudent)
+  .patch(upload.single("image"), updateStudent)
   .delete(deleteStudent);
 
 export default router;
