@@ -9,12 +9,18 @@ import {
   getClassAttendance,
   getClassAttendanceByDateRange,
   getStudentAttendanceByDateRange,
+  getTodayAttendance,
+  getMonthlyAttendance,
   //   getAttendanceByDate,
 } from "../controllers/attendance.controller";
 import { protect } from "../middleware/protect";
 const router = express.Router();
 
-router.use(protect); // Protect all routes
+// router.use(protect); // Protect all routes
+
+// specific route firs
+router.get("/today", getTodayAttendance);
+router.get("/month", getMonthlyAttendance);
 
 router.route("/").get(getAllAttendances).post(createAttendances);
 

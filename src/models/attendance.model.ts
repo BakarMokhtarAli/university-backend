@@ -8,7 +8,7 @@ export type AttendanceStatus = "Present" | "Absent" | "Leave" | "Late";
 export interface IAttendance extends Document {
   date: Date;
   status: AttendanceStatus;
-  student: Types.ObjectId[];
+  student: Types.ObjectId | IStudent; // Reference to Student
   class: Types.ObjectId | IClass; // Reference to Class
   subject: Types.ObjectId | ISubject; // Add subject reference
 }
@@ -24,7 +24,7 @@ const attendanceSchema = new Schema<IAttendance>({
     required: true,
     enum: ["Present", "Absent", "Leave", "Late"],
   },
-  student: { type: [Schema.Types.ObjectId], ref: "Student" },
+  student: { type: Schema.Types.ObjectId, ref: "Student" },
   class: {
     type: Schema.Types.ObjectId,
     ref: "Class",

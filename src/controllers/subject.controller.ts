@@ -21,7 +21,7 @@ export const createSubject = catchAsync(
 // Get all subjects
 export const getAllSubjects = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const subjects = await Subject.find().populate("faculty", "name");
+    const subjects = await Subject.find().populate("classes");
     res.status(200).json({
       status: "success",
       message: "Subjects retrieved successfully",
@@ -33,10 +33,7 @@ export const getAllSubjects = catchAsync(
 // Get subject by ID
 export const getSubjectById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const subject = await Subject.findById(req.params.id).populate(
-      "faculty",
-      "name"
-    );
+    const subject = await Subject.findById(req.params.id);
 
     if (!subject) {
       return next(new AppError("Subject not found", 404));

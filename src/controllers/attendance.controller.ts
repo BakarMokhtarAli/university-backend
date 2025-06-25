@@ -387,3 +387,74 @@ export const getStudentAttendanceByDateRange = catchAsync(
     });
   }
 );
+
+// get today's attendance
+
+export const getTodayAttendance = catchAsync(
+  async (req: Request, res: Response) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const filter: any = {
+      date: { $gte: today, $lt: tomorrow },
+    };
+
+    if (req.query.subject) {
+      filter.subject = req.query.subject;
+    }
+
+    if (req.query.student) {
+      filter.student = req.query.student;
+    }
+
+    const records = await Attendance.find(filter)
+      .populate("student", "fullName student_id")
+      .populate("class", "name")
+      .populate("subject", "name code");
+
+    res.status(200).json({
+      status: "success",
+      date: today.toISOString().split("T")[0],
+      total: records.length,
+      data: records,
+    });
+  }
+);
+
+// get attendance by current month
+export const getMonthlyAttendance = catchAsync(
+  async (req: Request, res: Response) => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const filter: any = {
+      date: { $gte: startOfMonth, $lte: endOfMonth },
+    };
+
+    if (req.query.subject) {
+      filter.subject = req.query.subject;
+    }
+
+    if (req.query.student) {
+      filter.student = req.query.student;
+    }
+
+    const records = await Attendance.find(filter)
+      .populate("student", "fullName student_id")
+      .populate("class", "name")
+      .populate("subject", "name code");
+
+    res.status(200).json({
+      status: "success",
+      month: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}`,
+      total: records.length,
+      data: records,
+    });
+  }
+);
