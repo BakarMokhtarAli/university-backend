@@ -16,6 +16,7 @@ export const getAllClasses = catchAsync(
         path: "batch",
         select: "name",
       })
+      .populate("subjects")
       .sort({ createdAt: -1 });
     res.status(200).json({
       status: "success",

@@ -59,6 +59,12 @@ classSchema.virtual("students", {
   foreignField: "class",
 });
 
+classSchema.virtual("subjects", {
+  ref: "Subject",
+  localField: "_id",
+  foreignField: "classes",
+});
+
 const Class = mongoose.model<IClass>("Class", classSchema);
 
 export default Class;

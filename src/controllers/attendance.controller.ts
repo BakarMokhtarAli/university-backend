@@ -317,7 +317,7 @@ export const getClassAttendanceByDateRange = catchAsync(
 // Get attendance for a student by date range
 export const getStudentAttendanceByDateRange = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { student: studentId, startDate, endDate } = req.body;
+    const { student: studentId, startDate, endDate, subject } = req.body;
 
     // Validate parameters
     if (!studentId || !startDate || !endDate) {
@@ -352,14 +352,21 @@ export const getStudentAttendanceByDateRange = catchAsync(
       return next(new AppError("Student not found", 404));
     }
 
-    const attendances = await Attendance.find({
+    const filter: any = {
       student: studentId,
       date: { $gte: start, $lte: end },
-    })
+    };
+
+    if (subject) {
+      filter.subject = subject;
+    }
+
+    const attendances = await Attendance.find(filter)
       .populate({
         path: "class",
         select: "name",
       })
+      .populate("subject", "name code") // Populate subject details
       .sort({ date: 1 }); // Sort by date ascending
 
     // Calculate attendance summary

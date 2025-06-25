@@ -30,6 +30,23 @@ export const getAllSubjects = catchAsync(
   }
 );
 
+// get subjects by class
+export const getSubjectsByClass = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { class_id } = req.params;
+    if (!class_id) {
+      return next(new AppError("Class ID is required", 400));
+    }
+    const subjects = await Subject.find({ classes: class_id });
+    res.status(200).json({
+      status: "success",
+      // message: "Subjects retrieved successfully",
+      results: subjects.length,
+      subjects,
+    });
+  }
+);
+
 // Get subject by ID
 export const getSubjectById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
