@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
+import multer from "multer";
 
 interface CustomError extends Error {
   statusCode?: number;
@@ -62,6 +63,14 @@ const handleJWTError = (): AppError =>
 const handleTokenExpired = (): AppError =>
   new AppError("Your session has expired! Please log in again.", 401);
 
+const handleFileSizeError = (): AppError =>
+  new AppError("Image size should not exceed 2MB", 400);
+
+const handleFileCountError = (): AppError =>
+  new AppError("Only one image is allowed", 400);
+const handleUnexpectedFileError = (): AppError =>
+  new AppError("Unexpected file type. Please upload a valid image.", 400);
+
 const globalErrorHandler = (
   err: CustomError,
   req: Request,
@@ -77,7 +86,28 @@ const globalErrorHandler = (
     if (err.code === 11000) err = handleDuplicateFieldDb(err) || err;
     if (err.name === "JsonWebTokenError") err = handleJWTError();
     if (err.name === "TokenExpiredError") err = handleTokenExpired();
-
+    // Multer error handling
+    const error = err as unknown;
+    // file size limit exceeded
+    if (
+      error instanceof multer.MulterError &&
+      error.code === "LIMIT_FILE_SIZE"
+    ) {
+      err = handleFileSizeError();
+    }
+    // file count limit exceeded
+    if (
+      error instanceof multer.MulterError &&
+      error.code === "LIMIT_FILE_COUNT"
+    ) {
+      err = handleFileCountError();
+    }
+    if (
+      error instanceof multer.MulterError &&
+      error.code === "LIMIT_UNEXPECTED_FILE"
+    ) {
+      err = handleUnexpectedFileError();
+    }
     sendErrorProd(err, res);
   } else {
     sendErrDev(err, res);

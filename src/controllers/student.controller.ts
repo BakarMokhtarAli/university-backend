@@ -7,6 +7,9 @@ import { IStudent } from "../models/student.model"; // Import the interface
 import Class from "../models/class.model";
 import Faculty from "../models/faculty.model";
 import Counter from "../models/counter.model";
+import { deleteImageFile } from "../utils/deleteFile";
+import { APP_BASE_URL } from "../config";
+// import { uploadImage } from "../utils/uploadImage";
 
 // Get all students
 export const getAllStudents = catchAsync(
@@ -73,6 +76,18 @@ export const createStudent = catchAsync(
     const increment = counter.seq.toString().padStart(2, "0"); // e.g. 01
     const student_id = `${facultyCode}${year}${fixed}${increment}`; // e.g. CIS250501
 
+    // ⬇️ Image Handling with Multer
+    // let imageUrl = "";
+    // if (req.file) {
+    //   imageUrl = await uploadImage(req.file.buffer, req.body.fullName);
+    // }
+    // If file was uploaded, build public URL
+    if (req.file) {
+      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
+
+      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+    }
+
     // 5. Create student
     const newStudent = new Student({
       ...req.body,
@@ -91,32 +106,111 @@ export const createStudent = catchAsync(
 );
 
 // Update a student
+// export const updateStudent = catchAsync(
+//   async (req: AuthRequest, res: Response, next: NextFunction) => {
+//     let facultyId;
+//     // check if class has a faculty
+//     if (req.body.class) {
+//     const classDoc = await Class.findById(req.body.class);
+//     if (!classDoc) {
+//       throw new AppError("Class not found", 404);
+//     }
+//     facultyId = classDoc.faculty;
+
+//     const faculty = await Faculty.findById(facultyId);
+
+//     if (!faculty) {
+//       throw new AppError(
+//         `this class ${classDoc.name} does not have a faculty`,
+//         404
+//       );
+//     }
+//   }
+
+//     // prepare update payload
+//     const updatePayload: any = {
+//       ...req.body,
+//       faculty: facultyId,
+//     };
+
+//     // handle image upload if file exists
+//     if (req.file) {
+//       const imageUrl = await uploadImage(
+//         req.file.buffer,
+//         req.body.name || "student"
+//       );
+//       updatePayload.image = imageUrl;
+//     }
+
+//     const student = await Student.findByIdAndUpdate(
+//       req.params.id,
+//       updatePayload,
+//       {
+//         new: true,
+//         runValidators: true,
+//       }
+//     );
+//     if (!student) {
+//       return next(new AppError("Student not found", 404));
+//     }
+
+//     res.status(200).json({
+//       status: "success",
+//       message: "Student updated successfully",
+//       student,
+//     });
+//   }
+// );
+
 export const updateStudent = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    // check if class has a faculty
-    const classDoc = await Class.findById(req.body.class);
-    if (!classDoc) {
-      throw new AppError("Class not found", 404);
-    }
-    const facultyId = classDoc.faculty;
-    const faculty = await Faculty.findById(facultyId);
-    console.log("facultyId", facultyId);
+    // const updatePayload: any = {
+    //   ...req.body,
+    // };
+    const student = await Student.findById(req.params.id);
+    if (!student) throw new AppError("Student not found", 404);
 
-    if (!faculty) {
-      throw new AppError(
-        `this class ${classDoc.name} does not have a faculty`,
-        404
-      );
-    }
-
-    const student = await Student.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, faculty: facultyId },
-      {
-        new: true,
-        runValidators: true,
+    // 🔒 Only handle faculty update if class is being updated
+    if (req.body.class) {
+      const classDoc = await Class.findById(req.body.class);
+      if (!classDoc) {
+        throw new AppError("Class not found", 404);
       }
-    );
+
+      const facultyId = classDoc.faculty;
+      const faculty = await Faculty.findById(facultyId);
+      if (!faculty) {
+        throw new AppError(
+          `This class ${classDoc.name} does not have a valid faculty`,
+          404
+        );
+      }
+
+      req.body.faculty = facultyId;
+    }
+
+    // // 🔄 Handle image upload if file exists
+    // if (req.file) {
+    //   const imageUrl = await uploadImage(
+    //     req.file.buffer,
+    //     req.body.fullName || "student"
+    //   );
+    //   updatePayload.image = imageUrl;
+    // }
+    // Attach image URL if file exists
+    // 🔁 Delete old image if a new one is uploaded
+    if (req.file) {
+      if (student.image) deleteImageFile(student.image);
+      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
+
+      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+    }
+
+    const updated = await Student.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!student) {
       return next(new AppError("Student not found", 404));
     }
@@ -124,25 +218,23 @@ export const updateStudent = catchAsync(
     res.status(200).json({
       status: "success",
       message: "Student updated successfully",
-      student,
+      student: updated,
     });
   }
 );
 
 // Delete a student
 export const deleteStudent = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const student = await Student.findByIdAndDelete(req.params.id);
-    if (!student) {
-      return next(new AppError("Student not found", 404));
-    }
+  async (req: Request, res: Response, next: NextFunction) => {
+    const student = await Student.findById(req.params.id);
 
-    // You might want to send a 204 No Content response for successful deletion
-    res.status(204).json({
-      status: "success",
-      message: "Student deleted successfully",
-      data: null,
-    });
+    if (!student) return next(new AppError("Student not found", 404));
+    // 🧹 Delete image if exists
+    if (student.image) deleteImageFile(student.image);
+
+    await student.deleteOne();
+
+    res.status(204).json({ status: "success", data: null });
   }
 );
 

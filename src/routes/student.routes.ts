@@ -9,14 +9,19 @@ import {
 } from "../controllers/student.controller";
 
 const router = express.Router();
+import upload from "../middleware/upload";
+import { imageUpload } from "../middleware/imageUpload.middleware";
 
-router.route("/").get(getAllStudents).post(createStudent);
+router
+  .route("/")
+  .get(getAllStudents)
+  .post(imageUpload.single("image"), createStudent);
 router.route("/class/:class_id").get(getAllStudentsByClass);
 
 router
   .route("/:id")
   .get(getStudentById)
-  .patch(updateStudent)
+  .patch(imageUpload.single("image"), updateStudent)
   .delete(deleteStudent);
 
 export default router;

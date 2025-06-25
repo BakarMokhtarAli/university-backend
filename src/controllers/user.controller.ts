@@ -3,6 +3,9 @@ import AppError from "../utils/AppError";
 import catchAsync from "../utils/catchAsync";
 import User, { IUser } from "../models/user.model";
 import { AuthRequest } from "../middleware/protect";
+import { uploadImage } from "../utils/uploadImage";
+import { deleteImageFile } from "../utils/deleteFile";
+import { APP_BASE_URL } from "../config";
 
 export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users = await User.find().select("+password");
@@ -32,8 +35,14 @@ export const getUserById = catchAsync(
 // create user
 export const createUser = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const user = await User.create(req.body);
+    // If file was uploaded, build public URL
+    if (req.file) {
+      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
 
+      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+    }
+
+    const user = await User.create(req.body);
     res.status(201).json({
       status: "success",
       message: "User created successfully",
@@ -46,6 +55,18 @@ export const createUser = catchAsync(
 export const updateUser = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
+    const user = await User.findById(req.params.id);
+    if (!user) throw new AppError("User not found", 404);
+
+    // Attach image URL if file exists
+    // 🔁 Delete old image if a new one is uploaded
+    if (req.file) {
+      if (user.image) deleteImageFile(user.image);
+      const baseUrl = APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
+
+      req.body.image = `${baseUrl}/uploads/${req.file.filename}`;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,

@@ -6,9 +6,9 @@ export interface IStudent extends Document {
   // Personal Information
   fullName: string;
   class: mongoose.Types.ObjectId;
+  image: string | null;
   dateOfBirth?: Date;
   placeOfBirth?: string;
-
   motherName?: string;
   maritalStatus?: "Single" | "Married";
   email?: string;
@@ -36,6 +36,7 @@ const studentSchema = new mongoose.Schema<IStudent>(
       ref: "Class",
       required: true,
     },
+    image: { type: String },
     dateOfBirth: { type: Date },
     placeOfBirth: { type: String },
 

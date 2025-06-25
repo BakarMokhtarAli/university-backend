@@ -19,6 +19,7 @@ export interface IUser {
   is_active: boolean;
   createdAt: Date;
   updatedAt: Date;
+  image: string | null;
 
   // methods
   comparePassword(password: string): Promise<boolean>;
@@ -41,6 +42,7 @@ const userSchema = new Schema<IUser>(
       required: true,
       select: false,
     },
+    image: { type: String },
     role: {
       type: String,
       required: true,
