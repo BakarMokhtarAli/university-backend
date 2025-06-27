@@ -19,6 +19,8 @@ import gradeRoutes from "./routes/grade.routes";
 import announcementRoutes from "./routes/announcement.routes";
 import academicRoutes from "./routes/academic.routes";
 import timetableRoutes from "./routes/timetable.routes";
+import examRoutes from "./routes/exam.routes";
+import examResultRoutes from "./routes/examResult.routes";
 
 const app = express();
 app.use(express.json());
@@ -42,6 +44,8 @@ app.use("/api/grades", gradeRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/academics", academicRoutes);
 app.use("/api/timetables", timetableRoutes);
+app.use("/api/exams", examRoutes);
+app.use("/api/exam-results", examResultRoutes);
 
 // 404 no route found
 app.use((req, res, next) => {

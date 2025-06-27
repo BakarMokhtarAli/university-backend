@@ -65,19 +65,19 @@ export const login = catchAsync(
 
 export const studentLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id_number, password } = req.body;
+    const { student_id, password } = req.body;
 
-    if (!id_number || !password) {
+    if (!student_id || !password) {
       return next(new AppError("Please provide email and password", 400));
     }
 
     // Find the student by email and select the password field
-    const student = await Student.findOne({ id_number });
+    const student = await Student.findOne({ student_id });
 
     // Check if the student exists and the plain text password matches
     // WARNING: Comparing plain text passwords is a security risk
     if (!student || student.password !== password) {
-      return next(new AppError("Invalid email or password", 401));
+      return next(new AppError("Invalid student ID or password", 401));
     }
 
     // Generate JWT token
