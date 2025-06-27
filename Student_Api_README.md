@@ -322,3 +322,81 @@ Authorization: Token <jwt_token>
 | 401    | `Unauthorized` |
 
 ---
+
+## 📣 GET Announcements
+
+Retrieve a list of announcements for students. You can optionally filter by `receiver`.
+
+---
+
+### 🔐 Authorization
+
+This endpoint **requires authentication**.  
+Use this header:
+
+
+---
+
+### ✅ Endpoint
+```
+GET /api/v1/academics
+```
+
+
+---
+
+### 🔍 Query Parameters (Optional)
+
+| Param      | Type   | Description                                   |
+|------------|--------|-----------------------------------------------|
+| `receiver` | String | Filter by target audience (e.g., `student`, `all`) |
+
+---
+
+### 📬 Example Request
+
+```http
+GET /api/v1/announcements?receiver=student
+Authorization: Token <jwt_token>
+```
+
+
+---
+
+### ✅ Success Response
+
+```json
+{
+  "status": "success",
+  "count": 2,
+  "announcements": [
+    {
+      "_id": "665fcf...",
+      "title": "Exam Reminder",
+      "body": "Midterm exams start next week. Please check your schedule.",
+      "receiver": "student",
+      "createdAt": "2025-06-20T10:00:00.000Z"
+    },
+    {
+      "_id": "665fce...",
+      "title": "Maintenance Notice",
+      "body": "The portal will be down for maintenance this Saturday.",
+      "receiver": "student",
+      "createdAt": "2025-06-18T09:30:00.000Z"
+    }
+  ]
+}
+```
+
+
+
+### ⚠️ Error Responses
+
+| Status | Message        |
+| ------ | -------------- |
+| 401    | `Unauthorized` |
+
+---
+
+
+
