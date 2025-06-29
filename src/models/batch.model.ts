@@ -11,6 +11,7 @@ const batchSchema = new Schema<IBatch>(
   {
     name: {
       type: String,
+      unique: true,
       required: true,
     },
   },
