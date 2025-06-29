@@ -49,6 +49,6 @@ const examResultSchema = new Schema<IExamResult>(
 );
 
 // Optional: prevent duplicate result per subject + student
-examResultSchema.index({ subject: 1, student: 1 }, { unique: true });
+// examResultSchema.index({ student: 1, subject: 1 }, { unique: true });
 
 export default mongoose.model<IExamResult>("ExamResult", examResultSchema);

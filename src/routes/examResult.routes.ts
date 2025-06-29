@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.route("/").post(submitExamResults).get(getExamResultsByType);
 
-router.route("/student").patch(updateStudentMark);
+router.route("/student").post(updateStudentMark);
 router.get("/student/:studentId", getStudentExamResults);
 
 export default router;

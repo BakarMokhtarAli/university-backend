@@ -9,7 +9,7 @@ const MAX_MARKS_MAP: Record<string, number> = {
   cw1: 10,
   cw2: 10,
   midterm: 30,
-  final: 60,
+  final: 50,
 };
 
 export const submitExamResults = catchAsync(
@@ -25,12 +25,17 @@ export const submitExamResults = catchAsync(
       );
     }
 
-    // const students = await Student.find({ _id: results.map((r) => r.student) });
+    // Load all student names involved in the submission
+    const studentIds = results.map((r) => r.student);
+    const students = await Student.find({ _id: { $in: studentIds } }).select(
+      "_id fullName"
+    );
 
-    // const getStudentName = (studentId: string) => {
-    //   const student = students.find((s) => s._id.toString() === studentId);
-    //   return student?.fullName;
-    // };
+    //: Helper to get full name by ID
+    const getStudentName = (studentId: string) => {
+      const student = students.find((s) => s._id?.toString() === studentId);
+      return student?.fullName || `Student(${studentId})`;
+    };
 
     const examDoc = await Exam.findById(exam);
     if (!examDoc) {
@@ -52,14 +57,46 @@ export const submitExamResults = catchAsync(
 
       if (!student || marks === undefined || marks === null) {
         errors.push(`Missing student or marks`);
-        continue;
+        // return next(new AppError("Missing student or marks", 400));
       }
 
       if (typeof marks !== "number" || marks < 0 || marks > maxAllowed) {
         errors.push(
-          `Marks for student ${student} must be between 0 and ${maxAllowed}`
+          `Marks for student ${getStudentName(
+            student
+          )} must be between 0 and ${maxAllowed}`
         );
         continue;
+        // return next(
+        //   new AppError(
+        //     `Marks for student ${getStudentName(
+        //       student
+        //     )} must be between 0 and ${maxAllowed}`,
+        //     400
+        //   )
+        // );
+      }
+      const existing = await ExamResult.findOne({ exam, student, subject });
+      if (existing) {
+        errors.push(
+          `Result already exists for student ${getStudentName(student)}`
+        );
+        continue;
+        // return next(
+        //   new AppError(
+        //     `Result already exists for student ${getStudentName(student)}`,
+        //     400
+        //   )
+        // );
+      }
+
+      // ✅ Stop and return if any error is found BEFORE saving
+      if (errors.length > 0) {
+        return res.status(200).json({
+          status: "error",
+          message: "Validation failed. No exam results were saved.",
+          errors,
+        });
       }
 
       validUpdates.push({
@@ -77,8 +114,8 @@ export const submitExamResults = catchAsync(
 
     res.status(200).json({
       status: "success",
-      message: `Saved ${validUpdates.length} exam result(s)`,
       errors: errors.length > 0 ? errors : undefined,
+      message: `Saved ${validUpdates.length} exam result(s)`,
     });
   }
 );
