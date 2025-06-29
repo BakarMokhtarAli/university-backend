@@ -3,6 +3,8 @@ import {
   createAcademic,
   getAllAcademic,
   getAcademicById,
+  updateAcademicById,
+  deleteAcademicById,
 } from "../controllers/academic.controller";
 import { protect } from "../middleware/protect";
 
@@ -14,8 +16,10 @@ const router = express.Router();
 router.route("/").get(getAllAcademic).post(createAcademic);
 
 // GET one, UPDATE, DELETE by ID
-router.route("/:id").get(getAcademicById);
-//   .patch(updateAcademic)
-//   .delete(deleteAcademic);
+router
+  .route("/:id")
+  .get(getAcademicById)
+  .put(updateAcademicById)
+  .delete(deleteAcademicById);
 
 export default router;

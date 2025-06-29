@@ -47,9 +47,7 @@ export const createAcademic = catchAsync(
 // GET all academic sessions
 export const getAllAcademic = catchAsync(
   async (req: Request, res: Response) => {
-    const academicList = await Academic.find()
-      .populate("semester_id")
-      .populate("batch_id");
+    const academicList = await Academic.find().populate("batch_id");
 
     res.status(200).json({
       status: "success",
@@ -66,6 +64,51 @@ export const getAcademicById = catchAsync(
       academic_id: req.params.id,
     }).populate("semester_id");
 
+    if (!academic) {
+      return next(new AppError("Academic session not found", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: academic,
+    });
+  }
+);
+
+// UPDATE single academic session
+export const updateAcademicById = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    // const {
+    //   academic_id,
+    //   academic_year,
+    //   batch_id,
+    //   start_date,
+    //   end_date,
+    // } = req.body;
+
+    // if (!academic_id || !academic_year || !start_date || !end_date) {
+    //   return next(new AppError("All fields are required", 400));
+    // }
+
+    const academic = await Academic.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!academic) {
+      return next(new AppError("Academic session not found", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: academic,
+    });
+  }
+);
+
+// DELETE single academic session
+export const deleteAcademicById = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const academic = await Academic.findByIdAndDelete(req.params.id);
     if (!academic) {
       return next(new AppError("Academic session not found", 404));
     }
