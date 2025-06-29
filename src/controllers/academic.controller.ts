@@ -10,7 +10,7 @@ export const createAcademic = catchAsync(
     const { academic_year, semester_id, batch_id, start_date, end_date } =
       req.body;
 
-    if (!academic_year || !semester_id || !start_date || !end_date) {
+    if (!academic_year || !start_date || !end_date) {
       return next(new AppError("All fields are required", 400));
     }
 
