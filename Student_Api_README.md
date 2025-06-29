@@ -31,7 +31,7 @@ Authenticate a student using their `student_id` and password.
 ### ✅ Endpoint
 
 ```
-POST /api/v1/auth/student-login
+POST /api/v1/auth/studentlogin
 ```
 
 ### 📦 Request Body
