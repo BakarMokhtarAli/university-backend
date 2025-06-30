@@ -28,7 +28,26 @@ export const getAllStudents = catchAsync(
 // Get student by id
 export const getStudentById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const student = await Student.findById(req.params.id).populate("class");
+    const student = await Student.findById(req.params.id)
+      .populate("class")
+      .populate({
+        path: "results",
+        select: "marks exam subject class",
+        populate: [
+          {
+            path: "subject",
+            select: "name code",
+          },
+          {
+            path: "exam",
+            select: "title exam_type date",
+          },
+          {
+            path: "class",
+            select: "name",
+          },
+        ],
+      });
     if (!student) {
       return next(new AppError("Student not found", 404));
     }

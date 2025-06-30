@@ -88,6 +88,15 @@ studentSchema.methods.generateAuthToken = function () {
   });
 };
 
+studentSchema.set("toJSON", { virtuals: true });
+studentSchema.set("toObject", { virtuals: true });
+
+studentSchema.virtual("results", {
+  ref: "ExamResult", // Assuming you have a Result model
+  localField: "_id",
+  foreignField: "student",
+});
+
 const Student = mongoose.model<IStudent>("Student", studentSchema);
 
 export default Student;
