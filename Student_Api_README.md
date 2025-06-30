@@ -31,7 +31,7 @@ Authenticate a student using their `student_id` and password.
 ### ✅ Endpoint
 
 ```
-POST /api/v1/auth/studentlogin
+POST /api/auth/studentlogin
 ```
 
 ### 📦 Request Body
@@ -74,7 +74,7 @@ Retrieve a student’s exam results with optional filters.
 ### ✅ Endpoint
 
 ```
-GET /api/v1/exam-results/student/:studentId
+GET /api/exam-results/student/:studentId
 ```
 
 ### 🔗 Path Parameters
@@ -94,7 +94,7 @@ GET /api/v1/exam-results/student/:studentId
 ### 📬 Example Request
 
 ```
-GET /api/v1/exam-results/student/6621bcde4a?exam_type=midterm
+GET /api/exam-results/student/6621bcde4a?exam_type=midterm
 Authorization: Token <jwt_token>
 ```
 
@@ -147,7 +147,7 @@ Retrieve a student’s attendance records between two dates, optionally filtered
 ### ✅ Endpoint
 
 ```
-POST /api/v1/attendance/student/date-range
+POST /api/attendance/student/date-range
 ```
 
 ### 📦 Request Body
@@ -229,7 +229,7 @@ Update a student’s profile. This can include personal details, class, or profi
 ### ✅ Endpoint
 
 ```
-PATCH /api/v1/students/:id
+PATCH /api/students/:id
 ```
 
 ### 🔗 Path Parameters
@@ -282,13 +282,13 @@ Retrieve a list of all academic years and their linked semester info.
 ### ✅ Endpoint
 
 ```
-GET /api/v1/academics
+GET /api/academics
 ```
 
 ### 📬 Example Request
 
 ```http
-GET /api/v1/academics
+GET /api/academics
 Authorization: Token <jwt_token>
 ```
 
@@ -339,7 +339,7 @@ Use this header:
 
 ### ✅ Endpoint
 ```
-GET /api/v1/academics
+GET /api/academics
 ```
 
 
@@ -356,7 +356,7 @@ GET /api/v1/academics
 ### 📬 Example Request
 
 ```http
-GET /api/v1/announcements?receiver=student
+GET /api/announcements?receiver=student
 Authorization: Token <jwt_token>
 ```
 
