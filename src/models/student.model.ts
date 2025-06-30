@@ -36,7 +36,7 @@ const studentSchema = new mongoose.Schema<IStudent>(
       ref: "Class",
       required: true,
     },
-    image: { type: String },
+    image: { type: String, default: null }, // URL or path to the student's image
     dateOfBirth: { type: Date },
     placeOfBirth: { type: String },
 
