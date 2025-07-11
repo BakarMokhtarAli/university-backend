@@ -75,6 +75,22 @@ export const getAcademicById = catchAsync(
   }
 );
 
+export const getAcademicByBatch = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { batch_id } = req.params;
+    if (!batch_id) {
+      return next(new AppError("Batch ID is required", 400));
+    }
+    const academics = await Academic.find({ batch_id });
+
+    res.status(200).json({
+      status: "success",
+      results: academics.length,
+      data: academics,
+    });
+  }
+);
+
 // UPDATE single academic session
 export const updateAcademicById = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
